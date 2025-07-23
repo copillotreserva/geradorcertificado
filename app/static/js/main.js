@@ -32,25 +32,8 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function formatarData(input) {
-        let v = input.value.replace(/\D/g, '').slice(0, 8);
-        if (v.length >= 5) {
-            input.value = `${v.slice(0, 2)}/${v.slice(2, 4)}/${v.slice(4)}`;
-        } else if (v.length >= 3) {
-            input.value = `${v.slice(0, 2)}/${v.slice(2)}`;
-        } else {
-            input.value = v;
-        }
-    }
-
-    function formatarCertificado(input) {
-        let v = input.value.replace(/\D/g, '').slice(0, 8);
-        if (v.length > 6) {
-            input.value = `${v.slice(0, 6)}/${v.slice(6)}`;
-        } else {
-            input.value = v;
-        }
-    }
+    function formatarData(input) { let v = input.value.replace(/\D/g, '').slice(0, 8); if (v.length >= 5) { input.value = `${v.slice(0, 2)}/${v.slice(2, 4)}/${v.slice(4)}`; } else if (v.length >= 3) { input.value = `${v.slice(0, 2)}/${v.slice(2)}`; } else { input.value = v; } }
+    function formatarCertificado(input) { let v = input.value.replace(/\D/g, '').slice(0, 8); if (v.length > 6) { input.value = `${v.slice(0, 6)}/${v.slice(6)}`; } else { input.value = v; } }
 
     function validarData(dataStr) {
         const regex = /^\d{2}\/\d{2}\/\d{4}$/;
@@ -103,7 +86,7 @@ document.addEventListener('DOMContentLoaded', () => {
         editIndexField.value = index;
         addButton.textContent = '💾 Atualizar Item';
         addButton.style.backgroundColor = '#ffc107';
-        document.getElementById('numero').focus(); // Foca no Nº do certificado para edição
+        document.getElementById('numero').focus();
     }
 
     function excluirCertificado(index) {
@@ -157,6 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         editIndexField.value = -1;
         addButton.textContent = '+ Adicionar à Lista';
         addButton.style.backgroundColor = 'var(--btn-add)';
-        document.getElementById('data').focus(); // Cursor sempre vai para a data
+        // MUDANÇA FINAL E CORRETA: O cursor agora vai para o campo "Nº do Certificado"
+        document.getElementById('numero').focus();
     }
 });
