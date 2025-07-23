@@ -140,7 +140,7 @@ document.addEventListener('DOMContentLoaded', () => {
         editIndexField.value = -1;
         addButton.textContent = '+ Adicionar à Lista';
         addButton.style.backgroundColor = 'var(--btn-add)';
-        // CORREÇÃO AQUI: O cursor agora vai para o campo "Data"
-        document.getElementById('data').focus();
+        // MUDANÇA FINAL E CORRETA: O cursor agora vai para o campo "Nº do Certificado"
+        document.getElementById('numero').focus();
     }
 });
