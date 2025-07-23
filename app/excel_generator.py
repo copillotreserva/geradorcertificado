@@ -56,7 +56,8 @@ def create_certificate_workbook(lista_certificados):
         if sala: localizacao_parts.append(f"Sala: {sala}")
         if bloco: localizacao_parts.append(f"Bloco: {bloco}")
         if localizacao_parts:
-             partes_descricao.append(" - ".join(localizacao_parts)) # Junção com hífen
+             # Adiciona a localização como um único elemento para evitar múltiplos hífens
+             partes_descricao.append(" - ".join(localizacao_parts))
         
         partes_descricao.append(data_formatada_descricao)
         
