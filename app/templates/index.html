@@ -14,12 +14,13 @@
                 <form id="form-certificado" onkeydown="handleEnter(event)">
                     <input type="hidden" id="edit-index" value="-1">
 
-                    <!-- Coluna Esquerda do Formulário -->
+                    <!-- Coluna Esquerda do Formulário (Ordem 3.1) -->
                     <div class="form-column">
                         <div class="form-group">
                             <label for="barcode">Barcode # (Número da Caixa)</label>
                             <input type="text" id="barcode" name="barcode" required>
                         </div>
+                        <!-- ORDEM ALTERADA AQUI -->
                         <div class="form-group">
                             <label for="numero">Nº do Certificado (ex: 123456/78)</label>
                             <input type="text" id="numero" name="numero" required maxlength="9">
@@ -38,7 +39,7 @@
                         </div>
                     </div>
 
-                    <!-- Coluna Direita do Formulário -->
+                    <!-- Coluna Direita do Formulário (sem alteração) -->
                     <div class="form-column">
                         <div class="form-group">
                             <label for="tag">TAG (opcional)</label>
