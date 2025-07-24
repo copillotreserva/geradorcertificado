@@ -7,14 +7,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const listaUI = document.getElementById('lista-certificados');
     const batchDataInput = document.getElementById('batch_data');
 
-    // Adiciona os listeners de formatação
     document.getElementById('data').addEventListener('input', (e) => formatarData(e.target));
     document.getElementById('numero').addEventListener('input', (e) => formatarCertificado(e.target));
     
     addButton.addEventListener('click', adicionarOuAtualizarCertificado);
     clearButton.addEventListener('click', limparLista);
 
-    // Expõe funções para o escopo global para que o onclick no HTML funcione
     window.editarCertificado = editarCertificado;
     window.excluirCertificado = excluirCertificado;
     window.handleEnter = handleEnter;
@@ -47,8 +45,9 @@ document.addEventListener('DOMContentLoaded', () => {
         const dados = new FormData(form);
         const cert = Object.fromEntries(dados.entries());
 
-        if (!cert.barcode || !cert.data || !cert.numero || !cert.equipamento) {
-            alert('Por favor, preencha os campos obrigatórios: Barcode, Data, Nº e Equipamento.');
+        // Atualiza a validação para 'instrumento'
+        if (!cert.barcode || !cert.data || !cert.numero || !cert.instrumento) {
+            alert('Por favor, preencha os campos obrigatórios: Barcode, Data, Nº e Instrumento.');
             return;
         }
         if (!validarData(cert.data)) {
@@ -116,10 +115,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function resetarFormulario() {
-        // Campos que serão "lembrados"
+        // Atualiza a lista de campos a serem "lembrados"
         const camposParaManter = {
             barcode: form.elements['barcode'].value,
-            equipamento: form.elements['equipamento'].value,
+            instrumento: form.elements['instrumento'].value, // Atualizado
+            equipamento: form.elements['equipamento'].value, // Novo
             id_doc: form.elements['id_doc'].value,
             tag: form.elements['tag'].value,
             modelo: form.elements['modelo'].value,
@@ -128,9 +128,8 @@ document.addEventListener('DOMContentLoaded', () => {
             bloco: form.elements['bloco'].value,
         };
         
-        form.reset(); // Limpa tudo
+        form.reset();
 
-        // Restaura os valores que queremos manter
         for (const campo in camposParaManter) {
             if (form.elements[campo]) {
                 form.elements[campo].value = camposParaManter[campo];
@@ -140,7 +139,6 @@ document.addEventListener('DOMContentLoaded', () => {
         editIndexField.value = -1;
         addButton.textContent = '+ Adicionar à Lista';
         addButton.style.backgroundColor = 'var(--btn-add)';
-        // MUDANÇA FINAL E CORRETA: O cursor agora vai para o campo "Nº do Certificado"
         document.getElementById('numero').focus();
     }
 });
