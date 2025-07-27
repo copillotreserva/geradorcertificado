@@ -27,29 +27,32 @@ def create_certificate_workbook(lista_certificados):
         data_formatada_descricao = data_calibracao_obj.strftime('%d/%b/%Y')
         data_destruicao = "31/12/2036"
         
-        # --- PREPARAÇÃO DOS DADOS (VERSÃO 4.1 - COM LÓGICA DE 'N/A') ---
-        numero = dados.get('numero') or 'N/A'
-        instrumento = dados.get('instrumento', '').title() or 'N/A'
-        equipamento = dados.get('equipamento', '').title() or 'N/A'
-        tag = dados.get('tag', '').upper() or 'N/A'
-        modelo = dados.get('modelo', '').upper() or 'N/A'
-        fabricante = dados.get('fabricante', '').title() or 'N/A'
-        sala = dados.get('sala', '').upper() or 'N/A'
-        bloco = dados.get('bloco', '').upper() or 'N/A'
-        id_doc = dados.get('id_doc', '').upper() or 'N/A'
+        # --- PREPARAÇÃO DOS DADOS COM A LÓGICA "N/A" PARA TODOS OS OPCIONAIS ---
         
-        # --- MONTAGEM DA NOVA DESCRIÇÃO ---
-        # A montagem agora usa as variáveis já tratadas com 'N/A'
+        # Campos obrigatórios
+        numero = dados.get('numero') or 'N/A'
+        instrumento = (dados.get('instrumento') or 'N/A').title()
+        
+        # Campos opcionais (se vazios, recebem 'N/A' e são formatados)
+        equipamento = (dados.get('equipamento') or 'N/A').title()
+        tag = (dados.get('tag') or 'N/A').upper()
+        bloco = (dados.get('bloco') or 'N/A').upper()
+        sala = (dados.get('sala') or 'N/A').upper()
+        id_doc = (dados.get('id_doc') or 'N/A').upper()
+        fabricante = (dados.get('fabricante') or 'N/A').title()
+        modelo = (dados.get('modelo') or 'N/A').upper()
+
+        # --- MONTAGEM DA DESCRIÇÃO NA ORDEM EXATA SOLICITADA ---
         partes_descricao = [
-            "Certificado de Calibração",
-            f"Nº: {numero}",
+            f"Certificado de Calibração N°: {numero}",
+            f"Equipamento: {equipamento}",
+            f"TAG: {tag}",
+            f"Bloco: {bloco}",
+            f"Sala: {sala}",
             f"Instrumento: {instrumento}",
             f"ID: {id_doc}",
-            f"TAG: {tag}",
-            f"Equipamento: {equipamento}",
-            f"Modelo: {modelo}",
             f"Fabricante: {fabricante}",
-            f"Sala: {sala} - Bloco: {bloco}", # Junção direta com hífen
+            f"Modelo: {modelo}",
             data_formatada_descricao
         ]
         
@@ -60,8 +63,8 @@ def create_certificate_workbook(lista_certificados):
             dados.get('barcode'), VALORES_FIXOS['Box #/File No/Unique ID'], VALORES_FIXOS['DEPT.'],
             data_formatada_excel, data_formatada_excel, VALORES_FIXOS['Record Series Code'],
             VALORES_FIXOS['CATEGORY'], VALORES_FIXOS['SUBCATEGORY'], VALORES_FIXOS['Record Series Title/Type'],
-            descricao_final,
-            dados.get('tag', '').upper() or 'N/A', # A coluna TAG já estava correta
+            descricao_final, 
+            dados.get('tag').upper() if dados.get('tag') else 'N/A', # Lógica para a coluna TAG
             VALORES_FIXOS['Retention Period'],
             data_destruicao, VALORES_FIXOS['Legal Hold/Product Name'], VALORES_FIXOS['Data Owner'], VALORES_FIXOS['Notes']
         ]

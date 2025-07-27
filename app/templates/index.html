@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gerador de Lotes de Calibração 4.0</title>
+    <title>Gerador de Lotes de Calibração 4.1</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
 </head>
 <body>
@@ -28,7 +28,6 @@
                             <label for="data">Data da Calibração (dd/mm/aaaa)</label>
                             <input type="text" id="data" name="data" required maxlength="10">
                         </div>
-                        <!-- CAMPO RENOMEADO -->
                         <div class="form-group">
                             <label for="instrumento">Instrumento</label>
                             <input type="text" id="instrumento" name="instrumento" required>
@@ -41,16 +40,13 @@
 
                     <!-- Coluna Direita do Formulário -->
                     <div class="form-column">
-                        <!-- NOVA ESTRUTURA PARA TAG E EQUIPAMENTO LADO A LADO -->
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label for="tag">TAG (opcional)</label>
-                                <input type="text" id="tag" name="tag">
-                            </div>
-                            <div class="form-group">
-                                <label for="equipamento">Equipamento (opcional)</label>
-                                <input type="text" id="equipamento" name="equipamento">
-                            </div>
+                        <div class="form-group">
+                            <label for="tag">TAG (opcional)</label>
+                            <input type="text" id="tag" name="tag">
+                        </div>
+                        <div class="form-group">
+                            <label for="equipamento">Equipamento (opcional)</label>
+                            <input type="text" id="equipamento" name="equipamento">
                         </div>
                         <div class="form-group">
                             <label for="modelo">Modelo (opcional)</label>
@@ -64,7 +60,7 @@
                             <label for="sala">Sala (opcional)</label>
                             <input type="text" id="sala" name="sala">
                         </div>
-                        <div class="form-group">
+                         <div class="form-group">
                             <label for="bloco">Bloco (opcional)</label>
                             <input type="text" id="bloco" name="bloco">
                         </div>

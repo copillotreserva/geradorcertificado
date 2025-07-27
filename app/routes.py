@@ -22,7 +22,7 @@ def gerar_lote_excel():
 
         # ATUALIZA A LISTA DE CAMPOS OBRIGATÓRIOS
         for i, cert in enumerate(lista_certificados):
-            obrigatorios = ['barcode', 'data', 'numero', 'instrumento'] # 'equipamento' virou 'instrumento'
+            obrigatorios = ['barcode', 'data', 'numero', 'instrumento'] # Corrigido aqui
             for campo in obrigatorios:
                 if not cert.get(campo):
                     return f"Erro no item {i+1}: O campo '{campo}' é obrigatório.", 400

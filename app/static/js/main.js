@@ -7,15 +7,39 @@ document.addEventListener('DOMContentLoaded', () => {
     const listaUI = document.getElementById('lista-certificados');
     const batchDataInput = document.getElementById('batch_data');
 
+    // Adiciona os listeners de formatação
     document.getElementById('data').addEventListener('input', (e) => formatarData(e.target));
     document.getElementById('numero').addEventListener('input', (e) => formatarCertificado(e.target));
     
     addButton.addEventListener('click', adicionarOuAtualizarCertificado);
     clearButton.addEventListener('click', limparLista);
 
+    // Expõe funções para o escopo global
     window.editarCertificado = editarCertificado;
     window.excluirCertificado = excluirCertificado;
     window.handleEnter = handleEnter;
+
+    // --- FUNÇÕES DE FORMATAÇÃO RESTAURADAS ---
+    function formatarData(input) {
+        let v = input.value.replace(/\D/g, '').slice(0, 8);
+        if (v.length >= 5) {
+            input.value = `${v.slice(0, 2)}/${v.slice(2, 4)}/${v.slice(4)}`;
+        } else if (v.length >= 3) {
+            input.value = `${v.slice(0, 2)}/${v.slice(2)}`;
+        } else {
+            input.value = v;
+        }
+    }
+
+    function formatarCertificado(input) {
+        let v = input.value.replace(/\D/g, '').slice(0, 8);
+        if (v.length > 6) {
+            input.value = `${v.slice(0, 6)}/${v.slice(6)}`;
+        } else {
+            input.value = v;
+        }
+    }
+    // --- FIM DAS FUNÇÕES RESTAURADAS ---
 
     function handleEnter(event) {
         if (event.key === 'Enter') {
@@ -30,9 +54,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    function formatarData(input) { let v = input.value.replace(/\D/g, '').slice(0, 8); if (v.length >= 5) { input.value = `${v.slice(0, 2)}/${v.slice(2, 4)}/${v.slice(4)}`; } else if (v.length >= 3) { input.value = `${v.slice(0, 2)}/${v.slice(2)}`; } else { input.value = v; } }
-    function formatarCertificado(input) { let v = input.value.replace(/\D/g, '').slice(0, 8); if (v.length > 6) { input.value = `${v.slice(0, 6)}/${v.slice(6)}`; } else { input.value = v; } }
-
     function validarData(dataStr) {
         const regex = /^\d{2}\/\d{2}\/\d{4}$/;
         if (!regex.test(dataStr)) return false;
@@ -45,7 +66,6 @@ document.addEventListener('DOMContentLoaded', () => {
         const dados = new FormData(form);
         const cert = Object.fromEntries(dados.entries());
 
-        // Atualiza a validação para 'instrumento'
         if (!cert.barcode || !cert.data || !cert.numero || !cert.instrumento) {
             alert('Por favor, preencha os campos obrigatórios: Barcode, Data, Nº e Instrumento.');
             return;
@@ -115,13 +135,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function resetarFormulario() {
-        // Atualiza a lista de campos a serem "lembrados"
         const camposParaManter = {
             barcode: form.elements['barcode'].value,
-            instrumento: form.elements['instrumento'].value, // Atualizado
-            equipamento: form.elements['equipamento'].value, // Novo
+            instrumento: form.elements['instrumento'].value,
             id_doc: form.elements['id_doc'].value,
             tag: form.elements['tag'].value,
+            equipamento: form.elements['equipamento'].value,
             modelo: form.elements['modelo'].value,
             fabricante: form.elements['fabricante'].value,
             sala: form.elements['sala'].value,
@@ -129,13 +148,11 @@ document.addEventListener('DOMContentLoaded', () => {
         };
         
         form.reset();
-
         for (const campo in camposParaManter) {
             if (form.elements[campo]) {
                 form.elements[campo].value = camposParaManter[campo];
             }
         }
-
         editIndexField.value = -1;
         addButton.textContent = '+ Adicionar à Lista';
         addButton.style.backgroundColor = 'var(--btn-add)';
