@@ -95,18 +95,6 @@ document.addEventListener('DOMContentLoaded', () => {
         editIndexField: document.getElementById('edit-index-coleta'),
         listaUI: document.getElementById('lista-coleta'),
         batchDataInput: document.getElementById('batch_data_coleta'),
-        nextFieldToFocus: 'titulo-coleta'
-    };
-
-    // --- LÓGICA PARA O FORMULÁRIO DE COLETA DE DADOS ---
-    const coletaState = {
-        items: [],
-        form: document.getElementById('form-coleta'),
-        addButton: document.getElementById('add-btn-coleta'),
-        clearButton: document.getElementById('clear-btn-coleta'),
-        editIndexField: document.getElementById('edit-index-coleta'),
-        listaUI: document.getElementById('lista-coleta'),
-        batchDataInput: document.getElementById('batch_data_coleta'),
         nextFieldToFocus: 'data-coleta' // Alterado para pular para a data
     };
 
