@@ -98,39 +98,58 @@ document.addEventListener('DOMContentLoaded', () => {
         nextFieldToFocus: 'titulo-coleta'
     };
 
-    // --- LÓGICA DE AUTOCOMPLETE PARA TÍTULO ---
-    const titulosList = document.getElementById('titulos-list');
-    let savedTitulos = JSON.parse(localStorage.getItem('savedTitulos')) || [];
+    // --- LÓGICA PARA O FORMULÁRIO DE COLETA DE DADOS ---
+    const coletaState = {
+        items: [],
+        form: document.getElementById('form-coleta'),
+        addButton: document.getElementById('add-btn-coleta'),
+        clearButton: document.getElementById('clear-btn-coleta'),
+        editIndexField: document.getElementById('edit-index-coleta'),
+        listaUI: document.getElementById('lista-coleta'),
+        batchDataInput: document.getElementById('batch_data_coleta'),
+        nextFieldToFocus: 'data-coleta' // Alterado para pular para a data
+    };
 
-    function populateTitulosDatalist() {
-        titulosList.innerHTML = '';
-        savedTitulos.forEach(titulo => {
-            const option = document.createElement('option');
-            option.value = titulo;
-            titulosList.appendChild(option);
+    // --- LÓGICA DE INTERAÇÃO DO TÍTULO ---
+    const titleOptions = document.querySelectorAll('input[name="form_title_option"]');
+    const customTitleInput = document.getElementById('custom-title-input');
+    const dataColetaInput = document.getElementById('data-coleta');
+
+    titleOptions.forEach(radio => {
+        radio.addEventListener('change', () => {
+            if (radio.value === 'custom') {
+                customTitleInput.disabled = false;
+                customTitleInput.focus();
+            } else {
+                customTitleInput.disabled = true;
+                customTitleInput.value = '';
+                dataColetaInput.focus();
+            }
         });
-    }
+    });
 
-    function saveTitulo(titulo) {
-        if (titulo && !savedTitulos.includes(titulo)) {
-            savedTitulos.push(titulo);
-            localStorage.setItem('savedTitulos', JSON.stringify(savedTitulos));
-            populateTitulosDatalist();
+    customTitleInput.addEventListener('keydown', (event) => {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            dataColetaInput.focus();
         }
-    }
+    });
 
-    populateTitulosDatalist(); // Popula na inicialização
-
+    // --- CONFIGURAÇÃO DO FORMULÁRIO DE COLETA ---
     setupForm(coletaState, {
-        onAdd: (item) => saveTitulo(item.titulo), // Hook para salvar o título
         validate: (item) => {
-            if (!item.barcode || !item.data || !item.titulo) {
-                alert('Por favor, preencha os campos obrigatórios: Barcode, Título e Data.');
+            if (!item.barcode || !item.data) {
+                alert('Por favor, preencha os campos obrigatórios: Barcode e Data.');
                 return false;
+            }
+            // Validação do título
+            if (!item.titulo) {
+                 alert('Por favor, selecione um título ou preencha o campo "Outro".');
+                 return false;
             }
             return true;
         },
-        display: (item) => `<span>Título: ${item.titulo} - TAG: ${item.tag || 'N/A'}</span>`,
+        display: (item) => `<span>${item.titulo} - TAG: ${item.tag || 'N/A'}</span>`,
         fieldsToKeep: ['barcode', 'id_doc', 'tag', 'sala', 'bloco']
     });
 
@@ -154,6 +173,17 @@ function setupForm(state, config) {
 function adicionarOuAtualizarItem(state, config) {
     const dados = new FormData(state.form);
     const item = Object.fromEntries(dados.entries());
+
+    // Lógica para determinar o título para o form de coleta
+    if (state.form.id === 'form-coleta') {
+        if (item.form_title_option === 'custom') {
+            item.titulo = item.custom_title;
+        } else {
+            item.titulo = item.form_title_option;
+        }
+        delete item.form_title_option;
+        delete item.custom_title;
+    }
 
     if (!config.validate(item) || !validarData(item.data)) {
          if (!validarData(item.data)) {
@@ -188,8 +218,34 @@ function limparLista(state, config) {
 
 function editarItem(index, state, config) {
     const item = state.items[index];
+
+    // Lógica de edição para o formulário de coleta (título)
+    if (state.form.id === 'form-coleta') {
+        const titleOptions = document.querySelectorAll('input[name="form_title_option"]');
+        const customTitleInput = document.getElementById('custom-title-input');
+        let isCustom = true;
+
+        titleOptions.forEach(radio => {
+            if (radio.value === item.titulo) {
+                radio.checked = true;
+                customTitleInput.disabled = true;
+                customTitleInput.value = '';
+                isCustom = false;
+            }
+        });
+
+        if (isCustom) {
+            document.getElementById('title-opt-8').checked = true;
+            customTitleInput.disabled = false;
+            customTitleInput.value = item.titulo;
+        }
+    }
+
     const suffix = state.form.id.split('-')[1];
     for (const key in item) {
+        // Não tentar preencher o campo de título que não existe mais
+        if (state.form.id === 'form-coleta' && key === 'titulo') continue;
+
         const input = document.getElementById(`${key}-${suffix}`);
         if (input) {
             input.value = item[key];

@@ -89,21 +89,17 @@ def create_data_collection_workbook(lista_items):
         sala = (dados.get('sala') or 'N/A').upper()
         id_doc = (dados.get('id_doc') or 'N/A').upper()
         bloco = (dados.get('bloco') or 'N/A').upper()
-        titulo = (dados.get('titulo') or '').title()
+        titulo = dados.get('titulo', 'N/A') # Título vem pronto do frontend
 
-        if dados.get('prefix_checkbox'):
-            # Checkbox estava marcada, incluir o prefixo
-            partes_descricao = [
-                f"Formulário de Coleta de Dados {titulo}",
-                f"TAG: {tag}",
-                f"Bloco: {bloco}",
-                f"Sala: {sala}",
-                f"ID: {id_doc}"
-            ]
-            descricao_final = " - ".join(partes_descricao)
-        else:
-            # Checkbox estava desmarcada, usar apenas o título
-            descricao_final = titulo
+        partes_descricao = [
+            titulo,
+            f"TAG: {tag}",
+            f"Bloco: {bloco}",
+            f"Sala: {sala}",
+            f"ID: {id_doc}"
+        ]
+        # Filtra partes vazias ou N/A, exceto o título principal
+        descricao_final = " - ".join(p for p in partes_descricao if p and p.split(': ')[-1] not in ['N/A', ''])
 
 
         linha_completa = [

@@ -106,14 +106,41 @@
                                 <label for="barcode-coleta">Barcode # (Número da Caixa)</label>
                                 <input type="text" id="barcode-coleta" name="barcode" required>
                             </div>
-                            <div class="form-group">
-                                <label for="titulo-coleta">Título</label>
-                                <div class="checkbox-container">
-                                    <input type="checkbox" id="prefix-checkbox" name="prefix_checkbox" checked>
-                                    <label for="prefix-checkbox">Formulário de Coleta de Dados</label>
+                            <div class="form-group" id="title-options-group">
+                                <label>Título do Formulário</label>
+                                <div class="radio-option">
+                                    <input type="radio" id="title-opt-1" name="form_title_option" value="Formulário de Calibração de Válvula de Segurança e/ou Alívio" checked>
+                                    <label for="title-opt-1">Formulário de Calibração de Válvula de Segurança e/ou Alívio</label>
                                 </div>
-                                <input type="text" id="titulo-coleta" name="titulo" required list="titulos-list">
-                                <datalist id="titulos-list"></datalist>
+                                <div class="radio-option">
+                                    <input type="radio" id="title-opt-2" name="form_title_option" value="Formulário de Coleta de Dados: Calibração de Instrumentos de Medição de Pressão">
+                                    <label for="title-opt-2">Formulário de Coleta de Dados: Calibração de Instrumentos de Medição de Pressão</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="title-opt-3" name="form_title_option" value="Formulário de Coleta de Dados: Calibração de Balança">
+                                    <label for="title-opt-3">Formulário de Coleta de Dados: Calibração de Balança</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="title-opt-4" name="form_title_option" value="Calibração de Coleta de Dados: Calibração e Manutenção de Pipetas">
+                                    <label for="title-opt-4">Calibração de Coleta de Dados: Calibração e Manutenção de Pipetas</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="title-opt-5" name="form_title_option" value="Formulário de Especificação de Instrumentos do Sistema de Medição">
+                                    <label for="title-opt-5">Formulário de Especificação de Instrumentos do Sistema de Medição</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="title-opt-6" name="form_title_option" value="Calibração de Instrumentos de Medição de Temperatura">
+                                    <label for="title-opt-6">Calibração de Instrumentos de Medição de Temperatura</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="title-opt-7" name="form_title_option" value="Formulário de Coleta de Dados: Calibração de Data Logger">
+                                    <label for="title-opt-7">Formulário de Coleta de Dados: Calibração de Data Logger</label>
+                                </div>
+                                <div class="radio-option">
+                                    <input type="radio" id="title-opt-8" name="form_title_option" value="custom">
+                                    <label for="title-opt-8">Outro:</label>
+                                    <input type="text" id="custom-title-input" name="custom_title" disabled>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="data-coleta">Data da Coleta (dd/mm/aaaa)</label>
