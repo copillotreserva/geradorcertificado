@@ -1,66 +1,3 @@
-// --- LÓGICA DAS ABAS ---
-function openTab(evt, tabName) {
-    let i, tabcontent, tablinks;
-    tabcontent = document.getElementsByClassName("tab-content");
-    for (i = 0; i < tabcontent.length; i++) {
-        tabcontent[i].style.display = "none";
-    }
-    tablinks = document.getElementsByClassName("tab-button");
-    for (i = 0; i < tablinks.length; i++) {
-        tablinks[i].className = tablinks[i].className.replace(" active", "");
-    }
-    document.getElementById(tabName).style.display = "block";
-    evt.currentTarget.className += " active";
-}
-window.openTab = openTab;
-
-// --- FUNÇÕES GLOBAIS DE FORMATAÇÃO E VALIDAÇÃO ---
-function formatarData(input) {
-    let v = input.value.replace(/\D/g, '').slice(0, 8);
-    if (v.length >= 5) {
-        input.value = `${v.slice(0, 2)}/${v.slice(2, 4)}/${v.slice(4)}`;
-    } else if (v.length >= 3) {
-        input.value = `${v.slice(0, 2)}/${v.slice(2)}`;
-    } else {
-        input.value = v;
-    }
-}
-
-function formatarCertificado(input) {
-    let v = input.value.replace(/\D/g, '').slice(0, 8);
-    if (v.length > 6) {
-        input.value = `${v.slice(0, 6)}/${v.slice(6)}`;
-    } else {
-        input.value = v;
-    }
-}
-
-function validarData(dataStr) {
-    const regex = /^\d{2}\/\d{2}\/\d{4}$/;
-    if (!regex.test(dataStr)) return false;
-    const [dia, mes, ano] = dataStr.split('/').map(Number);
-    const data = new Date(ano, mes - 1, dia);
-    return data.getFullYear() === ano && data.getMonth() === mes - 1 && data.getDate() === dia;
-}
-
-function handleEnter(event, formId) {
-    if (event.key === 'Enter') {
-        event.preventDefault();
-        const form = document.getElementById(formId);
-        const inputs = Array.from(form.querySelectorAll('input:not([type="hidden"])'));
-        const currentIndex = inputs.indexOf(document.activeElement);
-
-        if (currentIndex > -1 && currentIndex < inputs.length - 1) {
-            inputs[currentIndex + 1].focus();
-        } else if (currentIndex === inputs.length - 1) {
-            const addButton = form.querySelector('.btn-add');
-            if(addButton) addButton.click();
-        }
-    }
-}
-window.handleEnter = handleEnter;
-
-
 document.addEventListener('DOMContentLoaded', () => {
     // --- LÓGICA PARA O FORMULÁRIO DE CERTIFICADOS ---
     const certState = {
@@ -95,15 +32,12 @@ document.addEventListener('DOMContentLoaded', () => {
         editIndexField: document.getElementById('edit-index-coleta'),
         listaUI: document.getElementById('lista-coleta'),
         batchDataInput: document.getElementById('batch_data_coleta'),
-        nextFieldToFocus: 'data-coleta' // Alterado para pular para a data
+        nextFieldToFocus: 'data-coleta'
     };
 
-    // --- LÓGICA DE INTERAÇÃO DO TÍTULO ---
     const titleOptions = document.querySelectorAll('input[name="form_title_option"]');
     const customTitleInput = document.getElementById('custom-title-input');
     const dataColetaInput = document.getElementById('data-coleta');
-
-    // --- LÓGICA DE PERSISTÊNCIA E INTERAÇÃO DO TÍTULO ---
     const LAST_SELECTED_ID_KEY = 'lastSelectedTitleId';
 
     function applyLastSelection() {
@@ -112,7 +46,6 @@ document.addEventListener('DOMContentLoaded', () => {
             const lastSelectedRadio = document.getElementById(lastSelectedId);
             if (lastSelectedRadio) {
                 lastSelectedRadio.checked = true;
-                // Dispara o evento change para garantir que a UI (ex: campo custom) seja atualizada
                 lastSelectedRadio.dispatchEvent(new Event('change'));
             }
         }
@@ -120,10 +53,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     titleOptions.forEach(radio => {
         radio.addEventListener('change', () => {
-            // Salva a seleção atual
             localStorage.setItem(LAST_SELECTED_ID_KEY, radio.id);
-
-            // Apenas gerencia o estado do input custom
             if (radio.value === 'custom') {
                 customTitleInput.disabled = false;
             } else {
@@ -134,12 +64,11 @@ document.addEventListener('DOMContentLoaded', () => {
 
         radio.addEventListener('keydown', (event) => {
             const key = event.key;
-            if (key !== 'ArrowUp' && key !== 'ArrowDown' && key !== 'Enter') {
-                return;
-            }
+            if (key !== 'ArrowUp' && key !== 'ArrowDown' && key !== 'Enter') return;
             event.preventDefault();
 
             if (key === 'Enter') {
+                event.stopPropagation();
                 radio.checked = true;
                 radio.dispatchEvent(new Event('change'));
                 if (radio.value === 'custom') {
@@ -151,12 +80,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const radios = Array.from(titleOptions);
                 const currentIndex = radios.indexOf(event.target);
                 let nextIndex;
-
-                if (key === 'ArrowDown') {
-                    nextIndex = (currentIndex + 1) % radios.length;
-                } else if (key === 'ArrowUp') {
-                    nextIndex = (currentIndex - 1 + radios.length) % radios.length;
-                }
+                if (key === 'ArrowDown') nextIndex = (currentIndex + 1) % radios.length;
+                else if (key === 'ArrowUp') nextIndex = (currentIndex - 1 + radios.length) % radios.length;
 
                 const nextRadio = radios[nextIndex];
                 nextRadio.focus();
@@ -173,17 +98,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Aplica a última seleção ao carregar a página
     applyLastSelection();
 
-    // --- CONFIGURAÇÃO DO FORMULÁRIO DE COLETA ---
     setupForm(coletaState, {
         validate: (item) => {
             if (!item.barcode || !item.data) {
                 alert('Por favor, preencha os campos obrigatórios: Barcode e Data.');
                 return false;
             }
-            // Validação do título
             if (!item.titulo) {
                  alert('Por favor, selecione um título ou preencha o campo "Outro".');
                  return false;
@@ -194,18 +116,14 @@ document.addEventListener('DOMContentLoaded', () => {
         fieldsToKeep: ['barcode', 'id_doc', 'tag', 'sala', 'bloco']
     });
 
-    // Adiciona listeners de formatação
     document.getElementById('data-cert').addEventListener('input', (e) => formatarData(e.target));
     document.getElementById('numero-cert').addEventListener('input', (e) => formatarCertificado(e.target));
     document.getElementById('data-coleta').addEventListener('input', (e) => formatarData(e.target));
 });
 
-// --- FUNÇÃO GENÉRICA PARA CONFIGURAR UM FORMULÁRIO ---
 function setupForm(state, config) {
     state.addButton.addEventListener('click', () => adicionarOuAtualizarItem(state, config));
     state.clearButton.addEventListener('click', () => limparLista(state, config));
-
-    // Expor funções de edição/exclusão globalmente com nomes únicos e válidos
     const formIdentifier = state.form.id.replace(/-/g, '_');
     window[`editar_${formIdentifier}`] = (index) => editarItem(index, state, config);
     window[`excluir_${formIdentifier}`] = (index) => excluirItem(index, state, config);
@@ -215,7 +133,6 @@ function adicionarOuAtualizarItem(state, config) {
     const dados = new FormData(state.form);
     const item = Object.fromEntries(dados.entries());
 
-    // Lógica para determinar o título para o form de coleta
     if (state.form.id === 'form-coleta') {
         if (item.form_title_option === 'custom') {
             item.titulo = item.custom_title;
@@ -227,7 +144,7 @@ function adicionarOuAtualizarItem(state, config) {
     }
 
     if (!config.validate(item) || !validarData(item.data)) {
-         if (!validarData(item.data)) {
+         if (config.validate(item) && !validarData(item.data)) {
             alert("Formato de data inválido. Por favor, use dd/mm/aaaa.");
             state.form.elements['data'].focus();
         }
@@ -239,10 +156,6 @@ function adicionarOuAtualizarItem(state, config) {
         state.items[editIndex] = item;
     } else {
         state.items.push(item);
-    }
-
-    if (config.onAdd) {
-        config.onAdd(item);
     }
 
     resetarFormulario(state, config);
@@ -260,7 +173,6 @@ function limparLista(state, config) {
 function editarItem(index, state, config) {
     const item = state.items[index];
 
-    // Lógica de edição para o formulário de coleta (título)
     if (state.form.id === 'form-coleta') {
         const titleOptions = document.querySelectorAll('input[name="form_title_option"]');
         const customTitleInput = document.getElementById('custom-title-input');
@@ -284,9 +196,7 @@ function editarItem(index, state, config) {
 
     const suffix = state.form.id.split('-')[1];
     for (const key in item) {
-        // Não tentar preencher o campo de título que não existe mais
         if (state.form.id === 'form-coleta' && key === 'titulo') continue;
-
         const input = document.getElementById(`${key}-${suffix}`);
         if (input) {
             input.value = item[key];
@@ -343,13 +253,24 @@ function resetarFormulario(state, config) {
         }
     }
 
-    // Re-aplica a seleção do radio button para o formulário de coleta
     if (state.form.id === 'form-coleta') {
-        applyLastSelection();
+        setTimeout(() => {
+            const lastSelectedId = localStorage.getItem('lastSelectedTitleId');
+            if (lastSelectedId) {
+                const lastSelectedRadio = document.getElementById(lastSelectedId);
+                if (lastSelectedRadio) {
+                    lastSelectedRadio.checked = true;
+                    lastSelectedRadio.dispatchEvent(new Event('change'));
+                }
+            }
+        }, 0);
     }
 
     state.editIndexField.value = -1;
     state.addButton.textContent = '+ Adicionar à Lista';
     state.addButton.style.backgroundColor = 'var(--btn-add)';
-    document.getElementById(state.nextFieldToFocus).focus();
+    let nextFocusElement = document.getElementById(state.nextFieldToFocus);
+    if (nextFocusElement) {
+        nextFocusElement.focus();
+    }
 }
