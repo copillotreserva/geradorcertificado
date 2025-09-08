@@ -103,24 +103,65 @@ document.addEventListener('DOMContentLoaded', () => {
     const customTitleInput = document.getElementById('custom-title-input');
     const dataColetaInput = document.getElementById('data-coleta');
 
+    // --- LÓGICA DE PERSISTÊNCIA E INTERAÇÃO DO TÍTULO ---
+    const LAST_SELECTED_ID_KEY = 'lastSelectedTitleId';
+
+    function applyLastSelection() {
+        const lastSelectedId = localStorage.getItem(LAST_SELECTED_ID_KEY);
+        if (lastSelectedId) {
+            const lastSelectedRadio = document.getElementById(lastSelectedId);
+            if (lastSelectedRadio) {
+                lastSelectedRadio.checked = true;
+                // Dispara o evento change para garantir que a UI (ex: campo custom) seja atualizada
+                lastSelectedRadio.dispatchEvent(new Event('change'));
+            }
+        }
+    }
+
     titleOptions.forEach(radio => {
         radio.addEventListener('change', () => {
+            // Salva a seleção atual
+            localStorage.setItem(LAST_SELECTED_ID_KEY, radio.id);
+
+            // Apenas gerencia o estado do input custom
             if (radio.value === 'custom') {
                 customTitleInput.disabled = false;
-                customTitleInput.focus();
             } else {
                 customTitleInput.disabled = true;
                 customTitleInput.value = '';
-                dataColetaInput.focus();
             }
         });
 
         radio.addEventListener('keydown', (event) => {
-            if (event.key === 'Enter') {
-                event.preventDefault();
+            const key = event.key;
+            if (key !== 'ArrowUp' && key !== 'ArrowDown' && key !== 'Enter') {
+                return;
+            }
+            event.preventDefault();
+
+            if (key === 'Enter') {
                 radio.checked = true;
-                // Dispara o evento 'change' para executar a lógica de foco
                 radio.dispatchEvent(new Event('change'));
+                if (radio.value === 'custom') {
+                    customTitleInput.focus();
+                } else {
+                    dataColetaInput.focus();
+                }
+            } else {
+                const radios = Array.from(titleOptions);
+                const currentIndex = radios.indexOf(event.target);
+                let nextIndex;
+
+                if (key === 'ArrowDown') {
+                    nextIndex = (currentIndex + 1) % radios.length;
+                } else if (key === 'ArrowUp') {
+                    nextIndex = (currentIndex - 1 + radios.length) % radios.length;
+                }
+
+                const nextRadio = radios[nextIndex];
+                nextRadio.focus();
+                nextRadio.checked = true;
+                nextRadio.dispatchEvent(new Event('change'));
             }
         });
     });
@@ -131,6 +172,9 @@ document.addEventListener('DOMContentLoaded', () => {
             dataColetaInput.focus();
         }
     });
+
+    // Aplica a última seleção ao carregar a página
+    applyLastSelection();
 
     // --- CONFIGURAÇÃO DO FORMULÁRIO DE COLETA ---
     setupForm(coletaState, {
@@ -298,6 +342,12 @@ function resetarFormulario(state, config) {
             input.value = camposParaManter[campoId];
         }
     }
+
+    // Re-aplica a seleção do radio button para o formulário de coleta
+    if (state.form.id === 'form-coleta') {
+        applyLastSelection();
+    }
+
     state.editIndexField.value = -1;
     state.addButton.textContent = '+ Adicionar à Lista';
     state.addButton.style.backgroundColor = 'var(--btn-add)';
