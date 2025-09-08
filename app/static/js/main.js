@@ -1,3 +1,16 @@
+const LAST_SELECTED_ID_KEY = 'lastSelectedTitleId';
+
+function applyLastSelection() {
+    const lastSelectedId = localStorage.getItem(LAST_SELECTED_ID_KEY);
+    if (lastSelectedId) {
+        const lastSelectedRadio = document.getElementById(lastSelectedId);
+        if (lastSelectedRadio) {
+            lastSelectedRadio.checked = true;
+            lastSelectedRadio.dispatchEvent(new Event('change'));
+        }
+    }
+}
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- LÓGICA PARA O FORMULÁRIO DE CERTIFICADOS ---
     const certState = {
@@ -38,18 +51,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const titleOptions = document.querySelectorAll('input[name="form_title_option"]');
     const customTitleInput = document.getElementById('custom-title-input');
     const dataColetaInput = document.getElementById('data-coleta');
-    const LAST_SELECTED_ID_KEY = 'lastSelectedTitleId';
-
-    function applyLastSelection() {
-        const lastSelectedId = localStorage.getItem(LAST_SELECTED_ID_KEY);
-        if (lastSelectedId) {
-            const lastSelectedRadio = document.getElementById(lastSelectedId);
-            if (lastSelectedRadio) {
-                lastSelectedRadio.checked = true;
-                lastSelectedRadio.dispatchEvent(new Event('change'));
-            }
-        }
-    }
 
     titleOptions.forEach(radio => {
         radio.addEventListener('change', () => {
@@ -254,16 +255,7 @@ function resetarFormulario(state, config) {
     }
 
     if (state.form.id === 'form-coleta') {
-        setTimeout(() => {
-            const lastSelectedId = localStorage.getItem('lastSelectedTitleId');
-            if (lastSelectedId) {
-                const lastSelectedRadio = document.getElementById(lastSelectedId);
-                if (lastSelectedRadio) {
-                    lastSelectedRadio.checked = true;
-                    lastSelectedRadio.dispatchEvent(new Event('change'));
-                }
-            }
-        }, 0);
+        applyLastSelection();
     }
 
     state.editIndexField.value = -1;
