@@ -102,11 +102,8 @@ def create_data_collection_workbook(lista_items):
             f"ID: {id_doc}"
         ]
 
-        # Filtra apenas as partes opcionais que não são 'N/A'
-        partes_filtradas = [p for p in partes_opcionais if p.split(': ')[-1] != 'N/A']
-
-        # Junta tudo
-        descricao_final = " - ".join(partes_obrigatorias + partes_filtradas)
+        # Junta tudo, agora incluindo campos N/A
+        descricao_final = " - ".join(partes_obrigatorias + partes_opcionais)
 
 
         linha_completa = [
