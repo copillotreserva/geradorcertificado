@@ -145,9 +145,10 @@ function setupForm(state, config) {
     state.addButton.addEventListener('click', () => adicionarOuAtualizarItem(state, config));
     state.clearButton.addEventListener('click', () => limparLista(state, config));
 
-    // Expor funções de edição/exclusão globalmente com nomes únicos
-    window[`editar_${state.form.id}`] = (index) => editarItem(index, state, config);
-    window[`excluir_${state.form.id}`] = (index) => excluirItem(index, state, config);
+    // Expor funções de edição/exclusão globalmente com nomes únicos e válidos
+    const formIdentifier = state.form.id.replace(/-/g, '_');
+    window[`editar_${formIdentifier}`] = (index) => editarItem(index, state, config);
+    window[`excluir_${formIdentifier}`] = (index) => excluirItem(index, state, config);
 }
 
 function adicionarOuAtualizarItem(state, config) {
@@ -212,13 +213,14 @@ function excluirItem(index, state, config) {
 
 function atualizarListaVisual(state, config) {
     state.listaUI.innerHTML = '';
+    const formIdentifier = state.form.id.replace(/-/g, '_');
     state.items.forEach((item, index) => {
         const li = document.createElement('li');
         li.innerHTML = `
             ${config.display(item)}
             <div class="list-actions">
-                <span onclick="window.editar_${state.form.id}(${index})">✏️</span>
-                <span onclick="window.excluir_${state.form.id}(${index})">🗑️</span>
+                <span onclick="window.editar_${formIdentifier}(${index})">✏️</span>
+                <span onclick="window.excluir_${formIdentifier}(${index})">🗑️</span>
             </div>
         `;
         state.listaUI.appendChild(li);

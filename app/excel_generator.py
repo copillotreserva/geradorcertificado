@@ -89,7 +89,7 @@ def create_data_collection_workbook(lista_items):
         sala = (dados.get('sala') or 'N/A').upper()
         id_doc = (dados.get('id_doc') or 'N/A').upper()
         bloco = (dados.get('bloco') or 'N/A').upper()
-        titulo = dados.get('titulo')
+        titulo = (dados.get('titulo') or '').title()
 
         partes_descricao = [
             f"Formulário de Coleta de Dados {titulo}",
