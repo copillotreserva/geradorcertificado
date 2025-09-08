@@ -91,15 +91,22 @@ def create_data_collection_workbook(lista_items):
         bloco = (dados.get('bloco') or 'N/A').upper()
         titulo = dados.get('titulo', 'N/A') # Título vem pronto do frontend
 
-        partes_descricao = [
-            titulo,
+        # Garante que o título esteja sempre presente
+        partes_obrigatorias = [titulo]
+
+        # Lista de partes opcionais para filtrar
+        partes_opcionais = [
             f"TAG: {tag}",
             f"Bloco: {bloco}",
             f"Sala: {sala}",
             f"ID: {id_doc}"
         ]
-        # Filtra partes vazias ou N/A, exceto o título principal
-        descricao_final = " - ".join(p for p in partes_descricao if p and p.split(': ')[-1] not in ['N/A', ''])
+
+        # Filtra apenas as partes opcionais que não são 'N/A'
+        partes_filtradas = [p for p in partes_opcionais if p.split(': ')[-1] != 'N/A']
+
+        # Junta tudo
+        descricao_final = " - ".join(partes_obrigatorias + partes_filtradas)
 
 
         linha_completa = [

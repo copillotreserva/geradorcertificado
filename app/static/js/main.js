@@ -114,6 +114,15 @@ document.addEventListener('DOMContentLoaded', () => {
                 dataColetaInput.focus();
             }
         });
+
+        radio.addEventListener('keydown', (event) => {
+            if (event.key === 'Enter') {
+                event.preventDefault();
+                radio.checked = true;
+                // Dispara o evento 'change' para executar a lógica de foco
+                radio.dispatchEvent(new Event('change'));
+            }
+        });
     });
 
     customTitleInput.addEventListener('keydown', (event) => {
