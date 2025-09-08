@@ -11,6 +11,69 @@ function applyLastSelection() {
     }
 }
 
+// --- LÓGICA DAS ABAS ---
+function openTab(evt, tabName) {
+    let i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tab-content");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+    }
+    tablinks = document.getElementsByClassName("tab-button");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].className = tablinks[i].className.replace(" active", "");
+    }
+    document.getElementById(tabName).style.display = "block";
+    evt.currentTarget.className += " active";
+}
+window.openTab = openTab;
+
+// --- FUNÇÕES GLOBAIS DE FORMATAÇÃO E VALIDAÇÃO ---
+function formatarData(input) {
+    let v = input.value.replace(/\D/g, '').slice(0, 8);
+    if (v.length >= 5) {
+        input.value = `${v.slice(0, 2)}/${v.slice(2, 4)}/${v.slice(4)}`;
+    } else if (v.length >= 3) {
+        input.value = `${v.slice(0, 2)}/${v.slice(2)}`;
+    } else {
+        input.value = v;
+    }
+}
+
+function formatarCertificado(input) {
+    let v = input.value.replace(/\D/g, '').slice(0, 8);
+    if (v.length > 6) {
+        input.value = `${v.slice(0, 6)}/${v.slice(6)}`;
+    } else {
+        input.value = v;
+    }
+}
+
+function validarData(dataStr) {
+    const regex = /^\d{2}\/\d{2}\/\d{4}$/;
+    if (!regex.test(dataStr)) return false;
+    const [dia, mes, ano] = dataStr.split('/').map(Number);
+    const data = new Date(ano, mes - 1, dia);
+    return data.getFullYear() === ano && data.getMonth() === mes - 1 && data.getDate() === dia;
+}
+
+function handleEnter(event, formId) {
+    if (event.key === 'Enter') {
+        event.preventDefault();
+        const form = document.getElementById(formId);
+        const inputs = Array.from(form.querySelectorAll('input:not([type="hidden"])'));
+        const currentIndex = inputs.indexOf(document.activeElement);
+
+        if (currentIndex > -1 && currentIndex < inputs.length - 1) {
+            inputs[currentIndex + 1].focus();
+        } else if (currentIndex === inputs.length - 1) {
+            const addButton = form.querySelector('.btn-add');
+            if(addButton) addButton.click();
+        }
+    }
+}
+window.handleEnter = handleEnter;
+
+
 document.addEventListener('DOMContentLoaded', () => {
     // --- LÓGICA PARA O FORMULÁRIO DE CERTIFICADOS ---
     const certState = {
