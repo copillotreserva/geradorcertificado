@@ -84,6 +84,7 @@
                     <ul id="lista-certificados"></ul>
                     <form action="{{ url_for('main.gerar_lote_excel') }}" method="post" id="form-lote-cert">
                         <input type="hidden" name="batch_data" id="batch_data_cert">
+                        <input type="hidden" name="form_type" value="certificate">
                         <button type="submit" class="btn btn-generate">✔️ Gerar e Baixar Excel</button>
                         <button type="button" id="clear-btn-cert" class="btn btn-clear">🗑️ Limpar Lista</button>
                     </form>
@@ -107,7 +108,8 @@
                             </div>
                             <div class="form-group">
                                 <label for="titulo-coleta">Título</label>
-                                <input type="text" id="titulo-coleta" name="titulo" required>
+                                <input type="text" id="titulo-coleta" name="titulo" required list="titulos-list">
+                                <datalist id="titulos-list"></datalist>
                             </div>
                             <div class="form-group">
                                 <label for="data-coleta">Data da Coleta (dd/mm/aaaa)</label>
@@ -129,6 +131,10 @@
                                 <label for="sala-coleta">Sala (opcional)</label>
                                 <input type="text" id="sala-coleta" name="sala">
                             </div>
+                            <div class="form-group">
+                                <label for="bloco-coleta">Bloco (opcional)</label>
+                                <input type="text" id="bloco-coleta" name="bloco">
+                            </div>
                         </div>
 
                         <div class="form-full-width">
@@ -142,6 +148,7 @@
                     <ul id="lista-coleta"></ul>
                     <form action="{{ url_for('main.gerar_lote_excel') }}" method="post" id="form-lote-coleta">
                         <input type="hidden" name="batch_data" id="batch_data_coleta">
+                        <input type="hidden" name="form_type" value="data_collection">
                         <button type="submit" class="btn btn-generate">✔️ Gerar e Baixar Excel</button>
                         <button type="button" id="clear-btn-coleta" class="btn btn-clear">🗑️ Limpar Lista</button>
                     </form>

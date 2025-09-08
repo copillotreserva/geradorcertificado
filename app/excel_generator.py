@@ -88,9 +88,18 @@ def create_data_collection_workbook(lista_items):
         tag = (dados.get('tag') or 'N/A').upper()
         sala = (dados.get('sala') or 'N/A').upper()
         id_doc = (dados.get('id_doc') or 'N/A').upper()
+        bloco = (dados.get('bloco') or 'N/A').upper()
         titulo = dados.get('titulo')
 
-        descricao_final = f"Formulário de Coleta de Dados {titulo}"
+        partes_descricao = [
+            f"Formulário de Coleta de Dados {titulo}",
+            f"TAG: {tag}",
+            f"Bloco: {bloco}",
+            f"Sala: {sala}",
+            f"ID: {id_doc}"
+        ]
+        descricao_final = " - ".join(partes_descricao)
+
 
         linha_completa = [
             dados.get('barcode'), VALORES_FIXOS['Box #/File No/Unique ID'], VALORES_FIXOS['DEPT.'],

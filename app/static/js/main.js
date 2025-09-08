@@ -98,7 +98,31 @@ document.addEventListener('DOMContentLoaded', () => {
         nextFieldToFocus: 'titulo-coleta'
     };
 
+    // --- LÓGICA DE AUTOCOMPLETE PARA TÍTULO ---
+    const titulosList = document.getElementById('titulos-list');
+    let savedTitulos = JSON.parse(localStorage.getItem('savedTitulos')) || [];
+
+    function populateTitulosDatalist() {
+        titulosList.innerHTML = '';
+        savedTitulos.forEach(titulo => {
+            const option = document.createElement('option');
+            option.value = titulo;
+            titulosList.appendChild(option);
+        });
+    }
+
+    function saveTitulo(titulo) {
+        if (titulo && !savedTitulos.includes(titulo)) {
+            savedTitulos.push(titulo);
+            localStorage.setItem('savedTitulos', JSON.stringify(savedTitulos));
+            populateTitulosDatalist();
+        }
+    }
+
+    populateTitulosDatalist(); // Popula na inicialização
+
     setupForm(coletaState, {
+        onAdd: (item) => saveTitulo(item.titulo), // Hook para salvar o título
         validate: (item) => {
             if (!item.barcode || !item.data || !item.titulo) {
                 alert('Por favor, preencha os campos obrigatórios: Barcode, Título e Data.');
@@ -107,7 +131,7 @@ document.addEventListener('DOMContentLoaded', () => {
             return true;
         },
         display: (item) => `<span>Título: ${item.titulo} - TAG: ${item.tag || 'N/A'}</span>`,
-        fieldsToKeep: ['barcode', 'id_doc', 'tag', 'sala']
+        fieldsToKeep: ['barcode', 'id_doc', 'tag', 'sala', 'bloco']
     });
 
     // Adiciona listeners de formatação
@@ -143,6 +167,10 @@ function adicionarOuAtualizarItem(state, config) {
         state.items[editIndex] = item;
     } else {
         state.items.push(item);
+    }
+
+    if (config.onAdd) {
+        config.onAdd(item);
     }
 
     resetarFormulario(state, config);
