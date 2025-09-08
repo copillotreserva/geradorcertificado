@@ -74,3 +74,36 @@ def create_certificate_workbook(lista_certificados):
     workbook.save(memoria_excel)
     memoria_excel.seek(0)
     return memoria_excel
+
+def create_data_collection_workbook(lista_items):
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active
+    sheet.append(CABECALHO)
+
+    for dados in lista_items:
+        data_coleta_obj = datetime.strptime(dados['data'], '%d/%m/%Y')
+        data_formatada_excel = data_coleta_obj.strftime('%d/%m/%Y')
+        data_destruicao = "31/12/2036"
+
+        tag = (dados.get('tag') or 'N/A').upper()
+        sala = (dados.get('sala') or 'N/A').upper()
+        id_doc = (dados.get('id_doc') or 'N/A').upper()
+        titulo = dados.get('titulo')
+
+        descricao_final = f"Formulário de Coleta de Dados {titulo}"
+
+        linha_completa = [
+            dados.get('barcode'), VALORES_FIXOS['Box #/File No/Unique ID'], VALORES_FIXOS['DEPT.'],
+            data_formatada_excel, data_formatada_excel, VALORES_FIXOS['Record Series Code'],
+            VALORES_FIXOS['CATEGORY'], VALORES_FIXOS['SUBCATEGORY'], VALORES_FIXOS['Record Series Title/Type'],
+            descricao_final,
+            tag,
+            VALORES_FIXOS['Retention Period'],
+            data_destruicao, VALORES_FIXOS['Legal Hold/Product Name'], VALORES_FIXOS['Data Owner'], VALORES_FIXOS['Notes']
+        ]
+        sheet.append(linha_completa)
+
+    memoria_excel = BytesIO()
+    workbook.save(memoria_excel)
+    memoria_excel.seek(0)
+    return memoria_excel

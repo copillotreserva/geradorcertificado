@@ -20,13 +20,45 @@ body {
 }
 
 .main-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
     width: 100%;
     min-height: 100vh;
     padding: 1rem;
     box-sizing: border-box;
+}
+
+.tab-container {
+    display: flex;
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.tab-button {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: var(--label-color);
+    transition: all 0.3s ease;
+    border-bottom: 3px solid transparent;
+}
+
+.tab-button.active {
+    color: var(--btn-add);
+    border-bottom: 3px solid var(--btn-add);
+}
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.5s;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
 .grid-container {
@@ -55,7 +87,8 @@ h2 {
     margin-bottom: 1.5rem;
 }
 
-#form-certificado {
+#form-certificado,
+#form-coleta {
     display: flex;
     flex-wrap: wrap;
     gap: 0 1.5rem; /* Espaçamento apenas entre as colunas */
@@ -121,15 +154,18 @@ input[type="text"]:focus {
 .btn-clear { background-color: #dc3545; }
 .btn-clear:hover { background-color: #c82333; }
 
-#lista-certificados {
+#lista-certificados,
+#lista-coleta {
     list-style-type: none;
     padding: 0;
     flex-grow: 1; /* Faz a lista ocupar o espaço disponível */
     overflow-y: auto;
     margin-bottom: 1rem;
+    max-height: 400px; /* Adicionado para evitar que a lista fique muito grande */
 }
 
-#lista-certificados li {
+#lista-certificados li,
+#lista-coleta li {
     display: flex;
     justify-content: space-between;
     align-items: center;
