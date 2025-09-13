@@ -102,8 +102,8 @@ def create_data_collection_workbook(lista_items):
             f"ID: {id_doc}"
         ]
 
-        # Junta tudo, agora incluindo campos N/A
-        descricao_final = " - ".join(partes_obrigatorias + partes_opcionais)
+        # Junta tudo, agora incluindo campos N/A e a data no final
+        descricao_final = " - ".join(partes_obrigatorias + partes_opcionais + [data_formatada_excel])
 
 
         linha_completa = [
