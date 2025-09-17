@@ -49,7 +49,7 @@ def create_certificate_workbook(lista_certificados):
         # Constrói a primeira parte do certificado com a lógica da empresa
         cert_part = f"Certificado de Calibração Externa N°: {numero}"
         if empresa:
-            cert_part += f" {empresa}"
+            cert_part += f" - Empresa: {empresa}"
 
         partes_descricao = [
             cert_part,

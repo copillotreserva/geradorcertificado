@@ -48,7 +48,7 @@ class ExcelGeneratorTestCase(unittest.TestCase):
         description_cell = sheet['J2'].value
 
         # Expected description string
-        expected_description_part = "Certificado de Calibração Externa N°: 987654/32 MY COMPANY"
+        expected_description_part = "Certificado de Calibração Externa N°: 987654/32 - Empresa: MY COMPANY"
 
         # Assert that the description contains the new formatted string
         self.assertIn(expected_description_part, description_cell)

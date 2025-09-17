@@ -10,7 +10,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Adiciona os listeners de formatação
     document.getElementById('data').addEventListener('input', (e) => formatarData(e.target));
-    document.getElementById('numero').addEventListener('input', (e) => formatarCertificado(e.target));
     
     addButton.addEventListener('click', adicionarOuAtualizarCertificado);
     clearButton.addEventListener('click', limparLista);
@@ -27,15 +26,6 @@ document.addEventListener('DOMContentLoaded', () => {
             input.value = `${v.slice(0, 2)}/${v.slice(2, 4)}/${v.slice(4)}`;
         } else if (v.length >= 3) {
             input.value = `${v.slice(0, 2)}/${v.slice(2)}`;
-        } else {
-            input.value = v;
-        }
-    }
-
-    function formatarCertificado(input) {
-        let v = input.value.replace(/\D/g, '').slice(0, 8);
-        if (v.length > 6) {
-            input.value = `${v.slice(0, 6)}/${v.slice(6)}`;
         } else {
             input.value = v;
         }
