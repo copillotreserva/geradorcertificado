@@ -1,5 +1,6 @@
 document.addEventListener('DOMContentLoaded', () => {
     let certificados = [];
+    let empresasSalvas = new Set(); // Usar um Set para evitar duplicatas
     const form = document.getElementById('form-certificado');
     const addButton = document.getElementById('add-btn');
     const clearButton = document.getElementById('clear-btn');
@@ -76,6 +77,13 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
+        // --- LÓGICA PARA AUTOCOMPLETE DA EMPRESA ---
+        if (cert.empresa && !empresasSalvas.has(cert.empresa)) {
+            empresasSalvas.add(cert.empresa);
+            atualizarDatalistEmpresas();
+        }
+        // --- FIM DA LÓGICA ---
+
         const editIndex = parseInt(editIndexField.value, 10);
         if (editIndex > -1) {
             certificados[editIndex] = cert;
@@ -137,6 +145,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function resetarFormulario() {
         const camposParaManter = {
             barcode: form.elements['barcode'].value,
+            empresa: form.elements['empresa'].value, // Manter o campo empresa
             instrumento: form.elements['instrumento'].value,
             id_doc: form.elements['id_doc'].value,
             tag: form.elements['tag'].value,
@@ -157,5 +166,15 @@ document.addEventListener('DOMContentLoaded', () => {
         addButton.textContent = '+ Adicionar à Lista';
         addButton.style.backgroundColor = 'var(--btn-add)';
         document.getElementById('numero').focus();
+    }
+
+    function atualizarDatalistEmpresas() {
+        const datalist = document.getElementById('empresas-list');
+        datalist.innerHTML = ''; // Limpa as opções existentes
+        empresasSalvas.forEach(empresa => {
+            const option = document.createElement('option');
+            option.value = empresa;
+            datalist.appendChild(option);
+        });
     }
 });

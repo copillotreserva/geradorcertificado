@@ -42,9 +42,17 @@ def create_certificate_workbook(lista_certificados):
         fabricante = (dados.get('fabricante') or 'N/A').title()
         modelo = (dados.get('modelo') or 'N/A').upper()
 
+        empresa = (dados.get('empresa') or '').upper()
+
         # --- MONTAGEM DA DESCRIÇÃO NA ORDEM EXATA SOLICITADA ---
+
+        # Constrói a primeira parte do certificado com a lógica da empresa
+        cert_part = f"Certificado de Calibração Externa N°: {numero}"
+        if empresa:
+            cert_part += f" {empresa}"
+
         partes_descricao = [
-            f"Certificado de Calibração N°: {numero}",
+            cert_part,
             f"Equipamento: {equipamento}",
             f"TAG: {tag}",
             f"Bloco: {bloco}",
