@@ -74,3 +74,46 @@ def create_certificate_workbook(lista_certificados):
     workbook.save(memoria_excel)
     memoria_excel.seek(0)
     return memoria_excel
+
+def create_ordem_servico_workbook(lista_os):
+    """Cria uma planilha Excel para a lista de Ordens de Serviço."""
+    workbook = openpyxl.Workbook()
+    sheet = workbook.active
+    sheet.append(CABECALHO) # Reutiliza o mesmo cabeçalho
+
+    for dados in lista_os:
+        data_obj = datetime.strptime(dados['data'], '%d/%m/%Y')
+        data_formatada_excel = data_obj.strftime('%d/%m/%Y')
+        data_formatada_descricao = data_obj.strftime('%d/%b/%Y')
+        data_destruicao = "31/12/2036"
+
+        # Prepara os dados do formulário
+        tipo_os = dados.get('tipo_os', 'N/A')
+        equipamento = (dados.get('equipamento', 'N/A')).title()
+        tag = (dados.get('tag', 'N/A')).upper()
+        bloco = (dados.get('bloco', 'N/A')).upper()
+        fabricante = (dados.get('fabricante', 'N/A')).title()
+        modelo = (dados.get('modelo', 'N/A')).upper()
+
+        # Monta a descrição da Ordem de Serviço
+        descricao_final = (
+            f"Instrucao - Ordem de Servico {tipo_os} - Equipamento: {equipamento} - TAG: {tag} - "
+            f"Localizacao: Bloco {bloco} - Fabricante: {fabricante} - Modelo: {modelo} - {data_formatada_descricao}"
+        )
+
+        # Monta a linha completa para o Excel
+        linha_completa = [
+            dados.get('barcode'), VALORES_FIXOS['Box #/File No/Unique ID'], VALORES_FIXOS['DEPT.'],
+            data_formatada_excel, data_formatada_excel, VALORES_FIXOS['Record Series Code'],
+            VALORES_FIXOS['CATEGORY'], VALORES_FIXOS['SUBCATEGORY'], VALORES_FIXOS['Record Series Title/Type'],
+            descricao_final,
+            tag, # Coluna TAG usa o valor do formulário
+            VALORES_FIXOS['Retention Period'],
+            data_destruicao, VALORES_FIXOS['Legal Hold/Product Name'], VALORES_FIXOS['Data Owner'], VALORES_FIXOS['Notes']
+        ]
+        sheet.append(linha_completa)
+
+    memoria_excel = BytesIO()
+    workbook.save(memoria_excel)
+    memoria_excel.seek(0)
+    return memoria_excel
